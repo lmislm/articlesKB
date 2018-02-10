@@ -1,0 +1,25 @@
+{
+  "name": "arcticles-show",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmislm/arcticles-show.git"
+  },
+  "author": "lmislm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lmislm/arcticles-show/issues"
+  },
+  "homepage": "https://github.com/lmislm/arcticles-show#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "mongoose": "^5.0.4",
+    "pug": "^2.0.0-rc.4"
+  }
+}
