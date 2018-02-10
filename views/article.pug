@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1= article.title
+    h5 作者： #{article.author}
+    br
+    p= article.body
+    hr
+    a.btn.btn-primary.mr-2(href='/articles/edit/'+article._id) 编辑
+    a.btn.btn-outline-danger.delete-article(href='#', data-id=article._id) 删 除

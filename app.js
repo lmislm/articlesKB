@@ -50,7 +50,14 @@ app.get('/',function (req, res) {
     //...
     // ];
 });
-
+//Get single Article from Database
+app.get('/articles/:id',function (req, res) {
+    Article.findById(req.params.id, function (err, article) {
+        res.render('article', {
+            article: article
+        });
+    });
+});
 //Add Router
 app.get('/articles/add',function (req, res) {
     res.render('add_article', {
@@ -75,6 +82,50 @@ app.post('/articles/add', function (req, res) {
    })
     // return;
 });
+
+//Load Edit Form
+app.get('/articles/edit/:id',function (req, res) {
+    Article.findById(req.params.id, function (err, article) {
+        res.render('edit_article', {
+            title:'文章编辑',
+            article: article
+        });
+    });
+});
+
+//Update Submit POST Route To Database
+ app.post('/articles/edit/:id', function (req, res) {
+    let article =  {};
+    article.title = req.body.title;
+    article.author = req.body.author;
+    article.body = req.body.body;
+
+    let query = {_id: req.params.id}
+
+
+    Article.update(query, article, function (err) {
+        if(err) {
+            console.log(err)
+            return
+        }else {
+            res.redirect('/');
+        }
+    })
+    // return;
+});
+
+ app.delete('/article/:id', function (req, res) {
+     let query = {_id: req.params.id}
+
+     Article.remove(query, function (err) {
+         if(err) {
+             console.log(err);
+         }
+         res.send('成功删除');
+     });
+ });
+
+
 app.listen(3000, function () {
     console.log('Server started on port :');
 });
