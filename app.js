@@ -31,6 +31,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+//set Public Folder
+app.use(express.static(path.join(__dirname, 'public')));
+
 //Home Route
 app.get('/',function (req, res) {
     Article.find({},function (err, articles) {
