@@ -4,128 +4,111 @@
  */
 const express = require('express');
 const path = require('path');
-const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const expressValidator = require('express-validator');
+const flash = require('connect-flash');
+const session = require('express-session');
+const config = require('./config/database');
+const passport = require('passport');
 
-mongoose.connect('mongodb://localhost/kb');
+
+mongoose.connect(config.database);
 let db = mongoose.connection;
 
-//Check connection
 db.once('open', function () {
-    console.log('MongoDB opened');
+    console.log('connected to db');
 });
-//check for DB
+
 db.on('error', function (err) {
-    console.log(err)
+    console.log(err);
 });
-//Bring to Models
+
+const app = express();
+
+//Bring in Models
 let Article = require('./models/article');
 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine','pug');
+
 app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(bodyParser.json());
 
 //set public folder
 app.use(express.static(path.join(__dirname, 'public')));
-//Load View Engine
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 
-//set Public Folder
-app.use(express.static(path.join(__dirname, 'public')));
+//--https://github.com/expressjs/
+//Express session Middleware
+app.use(session({
+    secret: 'keyboard cat',
+    //resave: Forces the session to be saved back to the session stor
+    resave: true,
+    saveUninitialized: true,
+    // cookie: { secure: true }
+}));
 
-//Home Route
+//Express messages Middleware
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+    res.locals.messages = require('express-messages')(req, res);
+    next();
+});
+
+//Express Validation Middleware
+//--https://github.com/andrewkeig/express-validation
+//different release
+app.use(expressValidator({
+    errorFormatter: function (param, msg, value) {
+        var namespace = param.split('.')
+            ,   root    = namespace.shift()
+            ,   formParam = root;
+
+        while (namespace.length) {
+            formParam += '[' + namespace.shift() + ']';
+        }
+        return {
+            param   :   formParam,
+            msg     :   msg,
+            value   :   value
+        };
+    }
+}));
+
+//Passport Config
+require('./config/passport')(passport);
+//Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('*', function (req, res, next) {
+   res.locals.user = req.user || null;
+   next();
+});
+
+//home route
 app.get('/',function (req, res) {
-    Article.find({},function (err, articles) {
+    Article.find({}, function (err, articles) {
         if(err) {
             console.log(err);
-        }else {
-            res.render('index', {
-                title: '文章',
+        }else{
+            res.render('index',{
+                title: 'Articles',
                 articles: articles
             });
         }
     });
-    // let articles = [
-    //...
-    // ];
-});
-//Get single Article from Database
-app.get('/articles/:id',function (req, res) {
-    Article.findById(req.params.id, function (err, article) {
-        res.render('article', {
-            article: article
-        });
-    });
-});
-//Add Router
-app.get('/articles/add',function (req, res) {
-    res.render('add_article', {
-        title: '添加文章'
-    });
 });
 
-// POST Router
-app.post('/articles/add', function (req, res) {
-   let article =  new Article();
-   article.title = req.body.title;
-   article.author = req.body.author;
-   article.body = req.body.body;
+//Router Files
+let articles = require('./routes/articles');
+let users = require('./routes/users');
+app.use('/articles', articles);
+app.use('/users', users);
 
-   article.save(function (err) {
-       if(err) {
-           console.log(err)
-           return
-       }else {
-           res.redirect('/');
-       }
-   })
-    // return;
-});
-
-//Load Edit Form
-app.get('/articles/edit/:id',function (req, res) {
-    Article.findById(req.params.id, function (err, article) {
-        res.render('edit_article', {
-            title:'文章编辑',
-            article: article
-        });
-    });
-});
-
-//Update Submit POST Route To Database
- app.post('/articles/edit/:id', function (req, res) {
-    let article =  {};
-    article.title = req.body.title;
-    article.author = req.body.author;
-    article.body = req.body.body;
-
-    let query = {_id: req.params.id}
-
-
-    Article.update(query, article, function (err) {
-        if(err) {
-            console.log(err)
-            return
-        }else {
-            res.redirect('/');
-        }
-    })
-    // return;
-});
-
- app.delete('/article/:id', function (req, res) {
-     let query = {_id: req.params.id}
-
-     Article.remove(query, function (err) {
-         if(err) {
-             console.log(err);
-         }
-         res.send('成功删除');
-     });
- });
-
-
-app.listen(3000, function () {
+app.listen(3000,function () {
     console.log('Server started on port :');
+
 });
+

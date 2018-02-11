@@ -1,7 +1,7 @@
 doctype html
 html
     head
-        title knowledgebase
+        title articleKB
         link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')
         link(rel='stylesheet' href='/css/style.css')
     body
@@ -15,10 +15,23 @@ html
                         li.nav-item.active
                             a.nav-link(href='/')
                                 | 主页
-                                span.sr-only (current)
-                        li.nav-item
+                        if user
+                            li.nav-item
                                 a.nav-link(href='/articles/add') 添加文章
+                    ul.nav.navbar-nav
+                        if user
+                            li.nav-item
+                                a.btn.btn-outline-danger.mr-2(href='/users/logout') 退出
+                        else
+                            li.nav-item
+                                a.btn.btn-success.mr-4(href='/users/register') 注册
+                            li.nav-item
+                                a.btn.btn-outline-primary(href='/users/login') 登录
         .container
+            != messages('message', locals)
+            if errors
+               each error, i in errors
+                div(class="alert alert-danger") #{error.msg}
             block content
             br
             hr

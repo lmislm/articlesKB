@@ -1,25 +1,25 @@
 {
-  "name": "arcticles-show",
+  "name": "mongo_connect",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "node app"
+    "start": "node app"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lmislm/arcticles-show.git"
-  },
-  "author": "lmislm",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/lmislm/arcticles-show/issues"
-  },
-  "homepage": "https://github.com/lmislm/arcticles-show#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
+    "connect-flash": "^0.1.1",
     "express": "^4.16.2",
-    "mongoose": "^5.0.4",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.15.6",
+    "express-validator": "^4.3.0",
+    "mongodb": "^3.0.2",
+    "mongoose": "^5.0.3",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "pug": "^2.0.0-rc.4"
   }
 }

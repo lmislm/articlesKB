@@ -4,21 +4,21 @@
  */
 let mongoose = require('mongoose');
 
-//Article schema
-let articleSchema = mongoose.Schema({
-    title:{
-        type: String,
-        require: true
-    },
-    author:{
-        type: String,
-        require: true
-    },
-    body:{
-        type: String,
-        require: true
-    }
 
+//article schema
+let articleSchema = mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    author: {
+        type: String,
+        required: true
+    },
+    body: {
+        type: String,
+        required: true
+    },
 });
 
-let Article = module.exports = mongoose.model('Articles', articleSchema);
+let Article = module.exports = mongoose.model('Article', articleSchema);
