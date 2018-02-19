@@ -34,7 +34,7 @@ also you can
 > pm2 start/stop app.js
 
 
-port 3000 run at port 8080
+port 3002 run at port 8080
 
 + you can install libcap2-bin in linux
 
