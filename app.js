@@ -107,7 +107,7 @@ let users = require('./routes/users');
 app.use('/articles', articles);
 app.use('/users', users);
 
-app.listen(3000,function () {
+app.listen(3002,function () {
     console.log('Server started on port :');
 
 });
